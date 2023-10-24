@@ -515,6 +515,14 @@ class E3DC:
         else:
             return False
 
+    def get_manual_charge_state(self, keepAlive=False):
+        """Requests the manuel charge sate from the inverter"""
+        return self.sendRequestTag(RscpTag.EMS_MANUAL_CHARGE_ACTIVE, keepAlive=keepAlive)
+
+    def get_current_charging_session_amount(self, keepAlive=False):
+        """Request the charge amount of this session"""
+        return self.sendRequestTag(RscpTag.EMS_MANUAL_CHARGE_ENERGY_COUNTER, keepAlive=keepAlive)
+
     def sendRequest(self, request, retries=3, keepAlive=False):
         """This function uses the RSCP interface to make a request.
 
@@ -1130,7 +1138,7 @@ class E3DC:
         """
         # use keepAlive setting for last request
         sw = self.sendRequestTag(RscpTag.EMS_REQ_SYS_STATUS, keepAlive=keepAlive)
-        SystemStatusBools = [bool(int(i)) for i in reversed(list(f"{sw:022b}"))]
+        SystemStatusBools = [bool(int(i)) for i in reversed(list(f"{sw: 022b}"))]
 
         outObj = {
             "dcdcAlive": 0,
@@ -2040,7 +2048,7 @@ class E3DC:
         )
 
         activePhasesChar = rscpFindTagIndex(res, RscpTag.PM_ACTIVE_PHASES)
-        activePhases = f"{activePhasesChar:03b}"
+        activePhases = f"{activePhasesChar: 03b}"
 
         outObj = {
             "activePhases": activePhases,
