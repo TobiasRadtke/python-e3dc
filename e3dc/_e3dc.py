@@ -493,6 +493,28 @@ class E3DC:
         else:
             return False  # operation did not succeed
 
+    def set_manual_charge(self, state, amount, keepAlive=False):
+        """This function uses the RSCP interface to start a manual charge.
+        Specify the KW/H ins amount.
+        0 = charging stop
+        """
+        result = self.sendRequest(request=(RscpTag.EMS_REQ_START_MANUAL_CHARGE, RscpType.Uint32, amount), keepAlive=keepAlive)
+        if result[0] == RscpTag.EMS_MANUAL_CHARGE_ACTIVE and result[2]:
+            return True
+        else:
+            return False
+
+    def set_battery_charge_power(self, power, keepAlive=False):
+        """This function uses the RSCP interface to set a manual charge current.
+        Specify the W ins power.
+        0 = automatic
+        """
+        result = self.sendRequest(request=(RscpTag.TAG_EMS_MAX_CHARGE_POWER, RscpType.Uint32, power), keepAlive=keepAlive)
+        if result[0] == RscpTag.EMS_MAX_CHARGE_POWER and result[2]:
+            return True
+        else:
+            return False
+
     def sendRequest(self, request, retries=3, keepAlive=False):
         """This function uses the RSCP interface to make a request.
 
